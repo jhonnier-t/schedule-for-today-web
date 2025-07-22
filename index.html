@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScheduleForToday Web</title>
+
+  <style>
+    .section {
+      padding: 0 2.5rem;
+    }
+    :root {
+      --primary: #000000ff;
+      --secondary: #ffffffff;
+      --accent: #5a5a5aff;
+      --background: #FFFFFF;
+      --text: #000000ff;
+      --textSecondary: #ffffffff;
+      --border: #CCCCCC;
+      --placeholder: #999999;
+      --disabled: #F0F0F0;
+      --disabledText: #B0B0B0;
+      --card: #fff;
+      --error: #da0f0fff;
+      --success: #28a745;
+      --warning: #ffc107;
+      --info: #17a2b8;
+      --toastSuccess: #E6F9F0;
+      --toastError: #FDECEA;
+      --toastInfo: #E8F4FD;
+      --toastWarning: #FFF8E1;
+      --buttonText: #FFFFFF;
+      --buttonColor: #E5005A;
+      --buttonShadowColor: #E5005A;
+    }
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 0.5rem 0;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+    .nav-btn {
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      background: var(--disabled);
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      margin: 0 0.25rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--buttonColor);
+      color: var(--buttonText);
+    }
+    .section {
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+    .contact-link {
+      color: var(--accent);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .contact-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .action-btn {
+      background: var(--buttonColor);
+      color: var(--buttonText);
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: var(--primary);
+    }
+    .footer-app {
+      width: 100%;
+      background: var(--disabled);
+      padding: 1.5rem 0 1rem 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+    .footer-appname {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .footer-link {
+      color: var(--accent);
+      font-size: 1rem;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: var(--buttonColor);
+    }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      color: #888;
+      font-size: 0.95rem;
+    }
+    .footer-version {
+      margin-left: auto;
+    }
+    @media (max-width: 600px) {
+      main {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .footer-links {
+        gap: 0.7rem;
+      }
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
+    .highlight {
+      color: var(--buttonColor);
+      font-weight: 600;
+    }
+    .main-header {
+      background: var(--primary);
+      color: var(--textSecondary);
+      padding: 3rem 1rem 2rem 1rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .main-header:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .header-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: var(--card);
+      border: 2px solid var(--border);
+    }
+    .header-content h1 {
+      font-size: 2.7rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+    }
+    .subtitle {
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .header-info {
+      background: var(--card);
+      color: var(--primary);
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 2rem;
+      max-width: 700px;
+      margin: 2rem auto 0 auto;
+      border: 1px solid var(--border);
+      text-align: left;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    .pricing-cards {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .pricing-card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      min-width: 260px;
+      max-width: 320px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .pricing-card h3 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .pricing-card .price {
+      font-size: 2rem;
+      color: var(--buttonColor);
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .pricing-card ul {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .pricing-btn {
+      background: var(--buttonColor);
+      color: var(--buttonText);
+      border: none;
+      border-radius: 20px;
+      padding: 0.7rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .pricing-btn:hover {
+      background: var(--primary);
+    }
+    .download-card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      max-width: 400px;
+      margin: 2rem auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .download-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .download-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--disabled);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .download-btn:hover {
+      background: var(--toastInfo);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .download-btn.web span {
+      font-size: 1.1rem;
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header id="main-header" class="main-header">
+    <div class="header-content">
+      <img src="assets/ScheduleForTodayBlackRound.png" alt="Logo ScheduleForToday" class="header-logo" />
+      <div>
+        <h1>ScheduleForToday Web</h1>
+        <h2 class="subtitle">ScheduleForToday es una plataforma multiplataforma para agendar citas, descubrir empresas y gestionar servicios de manera moderna y sencilla.</h2>
+      </div>
+    </div>
+    <div id="header-info" class="header-info" style="display:none;">
+      <h2>¿Qué es ScheduleForToday?</h2>
+      <p>ScheduleForToday es una plataforma multiplataforma para agendar citas, descubrir empresas y gestionar servicios de manera moderna y sencilla.</p>
+      <ul>
+        <li>Buscar y descubrir empresas cercanas que ofrecen servicios.</li>
+        <li>Reservar citas de forma sencilla y segura.</li>
+        <li>Gestionar tu perfil y tus reservas desde tu móvil o web.</li>
+        <li>Recibir notificaciones y recordatorios para no olvidar tus citas importantes.</li>
+      </ul>
+    </div>
+  </header>
+  <nav class="nav-bar">
+    <button class="nav-btn" onclick="showSection('about')">¿Qué es?</button>
+    <button class="nav-btn" onclick="showSection('terms')">Términos y Condiciones</button>
+    <button class="nav-btn" onclick="showSection('privacy')">Privacidad</button>
+    <button class="nav-btn" onclick="showSection('contact')">Contacto</button>
+    <button class="nav-btn" onclick="showSection('pricing')">Precios</button>
+    <button class="nav-btn" onclick="showSection('download')">Descargar App</button>
+  </nav>
+  <main>
+    <section id="download" class="section" style="display:none">
+      <h2>Descarga la Aplicación</h2>
+      <div class="download-card">
+        <h1>¡Lleva ScheduleForToday contigo en cualquier dispositivo!</h1>
+        <div class="download-links">
+          <a href="https://play.google.com/store/apps/details?id=schedulefortoday" target="_blank" class="download-btn playstore">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Descargar en Play Store" height="40" />
+          </a>
+          <a href="https://apps.apple.com/app/schedulefortoday" target="_blank" class="download-btn appstore">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Descargar en App Store" height="40" />
+          </a>
+          <a href="https://schedulefortoday.com" target="_blank" class="download-btn web">
+            <span>Ir a la versión web</span>
+          </a>
+        </div>
+      </div>
+    </section>
+    <section id="about" class="section">
+      <h2>¿Qué es ScheduleForToday?</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🔍</span>Buscar y descubrir empresas cercanas que ofrecen servicios.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">📅</span>Reservar citas de forma sencilla y segura.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">👤</span>Gestionar tu perfil y tus reservas desde tu móvil o web.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🔔</span>Recibir notificaciones y recordatorios para no olvidar tus citas importantes.</li>
+      </ul>
+      <h2>¿A quién está dirigida?</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🧑‍💼</span><span class="highlight">Clientes</span>: Encuentra empresas y agenda tus servicios favoritos en segundos.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🏢</span><span class="highlight">Empresas</span>: Organiza tu agenda, gestiona empleados y recibe nuevas reservas.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">👨‍🔧</span><span class="highlight">Empleados</span>: Consulta tu horario y mantente al día con tus citas.</li>
+      </ul>
+      <h2>Características principales</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">⚡</span>Registro y acceso rápido para todos los usuarios.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🖼️</span>Perfil personalizable con foto y datos de contacto.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">📋</span>Listado de empresas y servicios disponibles en tu zona.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🗺️</span>Mapa interactivo para ubicar compañías y ver detalles.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">⭐</span>Sistema de favoritos para guardar tus empresas preferidas.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">👥</span>Gestión de empleados y horarios para empresas.</li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem;"><span style="font-size:1.5rem;">🔔</span>Recordatorios y notificaciones para tus citas.</li>
+      </ul>
+      <h2>¿Por qué elegir ScheduleForToday?</h2>
+      <p style="margin-bottom: 1.5rem;">Porque te ayuda a ahorrar tiempo, evitar olvidos y tener el control total de tus reservas. Todo en una experiencia intuitiva, moderna y accesible desde cualquier lugar.</p>
+      <p style="font-weight: bold; font-size: 1.1rem;">¡Empieza hoy mismo y lleva tu agenda al siguiente nivel con ScheduleForToday!</p>
+    </section>
+    <section id="terms" class="section" style="display:none">
+      <h2>Términos y Condiciones</h2>
+      <div style="max-width: 900px; margin: 0 auto; background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); padding: 2rem;">
+        <h3>1. Aceptación de los Términos</h3>
+        <p>Al acceder y utilizar la plataforma ScheduleForToday (“la Plataforma”), usted acepta cumplir y estar sujeto a los presentes Términos y Condiciones. Si no está de acuerdo con alguna parte de estos términos, debe abstenerse de utilizar la Plataforma.</p>
+        <h3>2. Descripción del Servicio</h3>
+        <p>ScheduleForToday es una solución digital para la gestión y reserva de citas entre clientes, empresas y empleados. La Plataforma permite a los usuarios buscar servicios, reservar citas, gestionar agendas y recibir notificaciones, todo en un entorno seguro y moderno.</p>
+        <h3>3. Registro y Cuenta de Usuario</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>Para acceder a ciertas funcionalidades, es necesario crear una cuenta proporcionando información veraz, actual y completa.</li>
+          <li>El usuario es responsable de mantener la confidencialidad de sus credenciales y de todas las actividades que ocurran bajo su cuenta.</li>
+          <li>ScheduleForToday se reserva el derecho de suspender o cancelar cuentas que incumplan estos términos o presenten actividad sospechosa.</li>
+        </ul>
+        <h3>4. Uso Adecuado de la Plataforma</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>Está prohibido el uso de la Plataforma para actividades ilícitas, fraudulentas, suplantación de identidad, manipulación de datos o cualquier acción que afecte la integridad del servicio y de otros usuarios.</li>
+          <li>El usuario se compromete a utilizar la Plataforma conforme a la ley y a respetar los derechos de terceros.</li>
+        </ul>
+        <h3>5. Privacidad y Protección de Datos</h3>
+        <p>La información personal proporcionada será tratada conforme a nuestra <a href="#privacy" class="contact-link" onclick="showSection('privacy')">Política de Privacidad</a>. ScheduleForToday implementa medidas de seguridad para proteger los datos de los usuarios y no compartirá información con terceros sin consentimiento expreso, salvo requerimiento legal.</p>
+        <h3>6. Responsabilidad y Limitaciones</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>ScheduleForToday no garantiza la disponibilidad ininterrumpida de la Plataforma y no se responsabiliza por daños derivados de interrupciones, errores técnicos o pérdida de datos.</li>
+          <li>La Plataforma actúa como intermediario entre clientes y empresas, por lo que no asume responsabilidad por la calidad de los servicios ofrecidos por terceros ni por acuerdos entre usuarios.</li>
+        </ul>
+        <h3>7. Modificaciones de los Términos</h3>
+        <p>ScheduleForToday se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Las modificaciones serán notificadas a través de la Plataforma y entrarán en vigor desde su publicación. El uso continuado implica la aceptación de los nuevos términos.</p>
+        <h3>8. Propiedad Intelectual</h3>
+        <p>Todos los contenidos, marcas, logotipos y elementos visuales de la Plataforma son propiedad de ScheduleForToday o de sus licenciantes. Queda prohibida su reproducción, distribución o uso sin autorización expresa.</p>
+        <h3>9. Legislación Aplicable y Jurisdicción</h3>
+        <p>Estos Términos y Condiciones se rigen por las leyes de Colombia. Cualquier controversia será sometida a los tribunales competentes de la ciudad de Bogotá, Colombia.</p>
+        <h3>10. Contacto</h3>
+        <p>Para consultas, reclamos o solicitudes relacionadas con estos Términos y Condiciones, puede contactarnos en <a href="mailto:soporte@schedulefortoday.com" class="contact-link">soporte@schedulefortoday.com</a>.</p>
+        <hr style="margin:2rem 0; border:none; border-top:1px solid var(--border);">
+        <p style="font-size:0.95rem; color:#888;">Última actualización: Julio 2025</p>
+      </div>
+    </section>
+    <section id="privacy" class="section" style="display:none">
+      <h2>Política de Privacidad</h2>
+      <div style="max-width: 900px; margin: 0 auto; background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); padding: 2rem;">
+        <h3>1. Introducción</h3>
+        <p>En ScheduleForToday, la protección de tu privacidad y datos personales es una prioridad. Esta Política de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos tu información al utilizar nuestra plataforma.</p>
+        <h3>2. Información que Recopilamos</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li><strong>Datos de registro:</strong> Nombre, correo electrónico, número de teléfono y contraseña.</li>
+          <li><strong>Datos de uso:</strong> Reservas de citas, historial de servicios, preferencias y actividad dentro de la plataforma.</li>
+          <li><strong>Datos técnicos:</strong> Dirección IP, tipo de dispositivo, sistema operativo y datos de navegación.</li>
+        </ul>
+        <h3>3. Finalidad del Tratamiento de Datos</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>Gestionar el acceso y uso de la plataforma.</li>
+          <li>Facilitar la reserva de citas y la comunicación entre clientes, empresas y empleados.</li>
+          <li>Personalizar la experiencia del usuario y mejorar nuestros servicios.</li>
+          <li>Enviar notificaciones, recordatorios y comunicaciones relevantes.</li>
+          <li>Cumplir con obligaciones legales y requerimientos de autoridades.</li>
+        </ul>
+        <h3>4. Compartir y Transferir Datos</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>No compartimos tus datos personales con terceros sin tu consentimiento, salvo en los siguientes casos:</li>
+          <li>Requerimiento legal o autoridad competente.</li>
+          <li>Proveedores de servicios tecnológicos que colaboran en el funcionamiento de la plataforma, bajo acuerdos de confidencialidad.</li>
+        </ul>
+        <h3>5. Seguridad de la Información</h3>
+        <p>Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdida, alteración o divulgación. El acceso a la información está restringido a personal autorizado y a proveedores bajo contrato de confidencialidad.</p>
+        <h3>6. Derechos del Usuario</h3>
+        <ul style="list-style: disc; margin-left: 1.5rem;">
+          <li>Acceder, rectificar o actualizar tus datos personales.</li>
+          <li>Solicitar la eliminación de tu cuenta y datos personales.</li>
+          <li>Oponerte al tratamiento de tus datos para fines específicos.</li>
+          <li>Ejercer tus derechos enviando una solicitud a <a href="mailto:soporte@schedulefortoday.com" class="contact-link">soporte@schedulefortoday.com</a>.</li>
+        </ul>
+        <h3>7. Conservación de los Datos</h3>
+        <p>Los datos personales se conservarán mientras mantengas una cuenta activa o mientras sea necesario para cumplir con obligaciones legales. Posteriormente, serán eliminados o anonimizados de forma segura.</p>
+        <h3>8. Modificaciones a la Política de Privacidad</h3>
+        <p>ScheduleForToday se reserva el derecho de modificar esta Política de Privacidad en cualquier momento. Las actualizaciones serán notificadas a través de la plataforma y publicadas en esta sección.</p>
+        <h3>9. Legislación Aplicable</h3>
+        <p>Esta Política de Privacidad se rige por las leyes de Colombia y cumple con la normativa de protección de datos personales vigente.</p>
+        <h3>10. Contacto</h3>
+        <p>Para consultas, solicitudes o ejercer tus derechos, contáctanos en <a href="mailto:soporte@schedulefortoday.com" class="contact-link">soporte@schedulefortoday.com</a>.</p>
+        <hr style="margin:2rem 0; border:none; border-top:1px solid var(--border);">
+        <p style="font-size:0.95rem; color:#888;">Última actualización: Julio 2025</p>
+      </div>
+    </section>
+    <section id="contact" class="section" style="display:none">
+      <h2>Datos de Contacto</h2>
+      <ul>
+        <li>Email: <a href="mailto:soporte@schedulefortoday.com" class="contact-link">soporte@schedulefortoday.com</a></li>
+        <li>Teléfono: <a href="tel:+573001234567" class="contact-link">+57 300 123 4567</a></li>
+        <li>Dirección: Calle 123 #45-67, Bogotá, Colombia</li>
+      </ul>
+      <div class="contact-actions">
+        <a href="mailto:soporte@schedulefortoday.com" class="action-btn">Enviar correo</a>
+        <a href="tel:+573001234567" class="action-btn">Llamar</a>
+      </div>
+    </section>
+    <section id="pricing" class="section" style="display:none">
+      <h2>Planes y Precios</h2>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <h3>Plan Mensual</h3>
+          <p class="price">$19.900 COP / mes</p>
+          <ul>
+            <li>Acceso completo a la plataforma</li>
+            <li>Soporte prioritario</li>
+            <li>Cancelación en cualquier momento</li>
+          </ul>
+          <button class="pricing-btn">Elegir Mensual</button>
+        </div>
+        <div class="pricing-card">
+          <h3>Plan Anual</h3>
+          <p class="price">$199.000 COP / año</p>
+          <ul>
+            <li>Acceso completo a la plataforma</li>
+            <li>2 meses gratis</li>
+            <li>Soporte prioritario</li>
+            <li>Cancelación en cualquier momento</li>
+          </ul>
+          <button class="pricing-btn">Elegir Anual</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer-app">
+    <div class="footer-top">
+      <img src="assets/ScheduleForTodayBlackRound.png" alt="ScheduleForToday Logo" class="footer-logo" />
+      <span class="footer-appname">ScheduleForToday</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://schedulefortoday.com" class="footer-link">Sitio web</a>
+      <a href="https://schedulefortoday.com/privacidad" class="footer-link">Privacidad</a>
+      <a href="mailto:soporte@schedulefortoday.com" class="footer-link">Contacto</a>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2025 ScheduleForToday. Todos los derechos reservados.</span>
+      <span class="footer-version">v1.0.0</span>
+    </div>
+  </footer>
+  <script>
+    const sectionRoutes = {
+      about: '/',
+      terms: '/terminosycondiciones',
+      privacy: '/privacidad',
+      contact: '/contacto',
+      pricing: '/precios',
+      download: '/descargarapp'
+    };
+
+    function showSection(sectionId, push = true) {
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+      });
+      document.getElementById(sectionId).style.display = 'block';
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const btns = document.querySelectorAll('.nav-btn');
+      if(sectionId === 'about') btns[0].classList.add('active');
+      if(sectionId === 'terms') btns[1].classList.add('active');
+      if(sectionId === 'privacy') btns[2].classList.add('active');
+      if(sectionId === 'contact') btns[3].classList.add('active');
+      if(sectionId === 'pricing') btns[4].classList.add('active');
+      if(sectionId === 'download') btns[5].classList.add('active');
+      if(push && sectionRoutes[sectionId]) {
+        history.pushState({section: sectionId}, '', sectionRoutes[sectionId]);
+      }
+    }
+
+    window.onpopstate = function(event) {
+      if(event.state && event.state.section) {
+        showSection(event.state.section, false);
+      } else {
+        showSection('about', false);
+      }
+    };
+
+    // Inicializa mostrando la sección principal y ajusta según la ruta
+    function getSectionFromPath() {
+      const path = window.location.pathname;
+      for(const [key, route] of Object.entries(sectionRoutes)) {
+        if(route === path) return key;
+      }
+      return 'about';
+    }
+    showSection(getSectionFromPath(), false);
+  </script>
+</body>
+</html>
